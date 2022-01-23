@@ -17,24 +17,10 @@ class HelloController extends AbstractController
     */
     public function index(Request $request, LoggerInterface $logger)
     {
-			$content = <<< EOM
-				<html>
-					<head>
-						<title>Hello</title>
-					</head>
-					<body>
-						<h1>Hello!</h1>
-						<p>this is Symfony sample page.</p>
-					</body>
-				</html>
-EOM;
-			$response = new Response(
-				$content,
-				Response::HTTP_OK,
-				array('content-type' => 'text/html')
-			);
-			$logger->info('aaaaa');
-			return $response;
+			// $this ->render(テンプレート名、[テンプレートに渡す値の配列])
+			return $this->render('hello/index.html.twig',[
+				'controller_name' => 'HelloController',
+			]);
     }
 
 		/**
