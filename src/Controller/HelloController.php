@@ -17,23 +17,17 @@ class HelloController extends AbstractController
     */
     public function index(Request $req)
     {
+			if ($req->getMethod() == 'POST') {
+				$input = $req->request->get('input');
+				$msg = 'こんにちは、' . $input . 'さん!';
+			} else {
+				$msg = 'あなたのお名前は？';
+			}
 			return $this->render('hello/index.html.twig',[
-				'title' => 'Hello',
-				'message' => 'あなたのお名前は？'
-			]);
-    }
-
-		/**
-		 * @Route("/other", name="other")
-		 */
-		public function other(Request $req) {
-			$input = $req->request->get('input');
-			$msg = 'こんにちは、' . $input . 'さん!';
-			return $this ->render('hello/index.html.twig', [
 				'title' => 'Hello',
 				'message' => $msg
 			]);
-		}
+    }
 
 		/**
 		 * @Route("/notfound", name="notfound")
