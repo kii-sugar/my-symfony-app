@@ -13,15 +13,29 @@ use Symfony\Component\Routing\Annotation\Route;
 class HelloController extends AbstractController
 {
     /**
-    * @Route("/hello", name="hello")
+    * @Route("/hello/{msg}", name="hello")
     */
-    public function index(Request $request, LoggerInterface $logger)
+    public function index($msg='Hello')
     {
-			// $this ->render(テンプレート名、[テンプレートに渡す値の配列])
 			return $this->render('hello/index.html.twig',[
-				'controller_name' => 'HelloController',
+				'controller' => 'HelloControleer',
+				'action' => 'index',
+				'prev_action' => '(none)',
+				'message' => $msg
 			]);
     }
+
+		/**
+		 * @Route("/other/{action}/{msg}", name="other")
+		 */
+		public function other($action, $msg) {
+			return $this ->render('hello/index.html.twig', [
+				'controller' => 'HelloControleer',
+				'action' => 'other',
+				'prev_action' => $action,
+				'message' => $msg
+			]);
+		}
 
 		/**
 		 * @Route("/notfound", name="notfound")
@@ -66,17 +80,5 @@ EOM;
 				array('content-type' => 'text/html')
 			);
 			return $response;
-		}
-
-		/**
-		 * @Route("/other/{domain}", name="other")
-		 */
-		public function other(Request $request, $domain='')
-		{
-			if ($domain == '') {
-				return $this -> redirect('/hello');
-			} else {
-				return new RedirectResponse("https://{$domain}.com");
-			}
 		}
 }
