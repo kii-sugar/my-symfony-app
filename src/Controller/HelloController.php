@@ -10,7 +10,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 // AbstractController
 // Twigというテンプレートエンジンを利用して画面をレンダリング表示するためにも必要
@@ -21,69 +22,70 @@ class HelloController extends AbstractController
     */
     public function index(Request $req)
     {
-			// メソッドチェーン
-			$form = $this->createFormBuilder()
-			->add('input', TextType::class)
-			->add('save', SubmitType::class, [
-				'label' => 'Click'
-			])
-			->getForm();
+			$person = new Person();
+			$person->setName('Naho')
+				->setAge(26)
+				->setMail('naho@gmail.com');
 
-			if ($req->getMethod() == 'POST') {
-				$form->handleRequest($req);
-				$msg = 'こんにちは、' . $form->get('input')->getData() . 'さん';
+			// Personインスタンスを引数指定し初期値セット。
+			// このためにはaddする項目の整合性がとれていないといけない。
+			$form = $this->createFormBuilder($person)
+				->add('name', TextType::class)
+				->add('age', IntegerType::class)
+				->add('mail', EmailType::class)
+				->add('save', SubmitType::class,[
+					'label' => 'Click!!'
+				])
+				->getForm();
+
+			IF($req->getMethod() == 'POST') {
+				$form->handleRequest($req); // reqをフォームに適合
+				$obj = $form->getData(); // フォームのPersonインスタンスを取り出す
+				$msg = 'Name: ' . $obj->getName() . '<br>'
+				. 'Age: ' . $obj->getAge() . '<br>'
+				. 'Mail: ' . $obj->getMail();
 			} else {
-				$msg = 'あなたのお名前は？';
+				$msg = 'お名前をどうぞ';
 			}
-			return $this->render('hello/index.html.twig',[
+			return $this->render('hello/index.html.twig', [
 				'title' => 'Hello',
 				'message' => $msg,
-				'form' => $form->createView() // 作成したフォームのFormViewがテンプレートに渡される
+				'form' => $form->createview()
 			]);
     }
+}
 
-		/**
-		 * @Route("/notfound", name="notfound")
-		 */
-		public function notfound(Request $request){
-			$content = <<< EOM
-			<html>
-				<head>
-					<title>ERROR</title>
-				</head>
-				<body>
-					<h1>EROR! 404</h1>
-					<p>this is Symfony sample error page.</p>
-				</body>
-			</html>
-EOM;
-			$response = new Response(
-				$content,
-				Response::HTTP_NOT_FOUND,
-				array('content-type' => 'text/html')
-			);
-			return $response;
-		}
-		/**
-		 * @Route("/error", name="error")
-		 */
-		public function error(Request $request){
-			$content = <<< EOM
-			<html>
-				<head>
-					<title>ERROR</title>
-				</head>
-				<body>
-					<h1>EROR! 500</h1>
-					<p>this is Symfony sample error page.</p>
-				</body>
-			</html>
-EOM;
-			$response = new Response(
-				$content,
-				Response::HTTP_INTERNAL_SERVER_ERROR,
-				array('content-type' => 'text/html')
-			);
-			return $response;
-		}
+// データクラス
+class Person
+{
+	protected $name;
+	protected $age;
+	protected $mail;
+
+	public function getName() {
+		return $this->name;
+	}
+
+	public function setName($name) {
+		$this->name = $name;
+		return $this;
+	}
+
+	public function getAge() {
+		return $this->age;
+	}
+
+	public function setAge($age) {
+		$this->age = $age;
+		return $this;
+	}
+
+	public function getMail() {
+		return $this->mail;
+	}
+
+	public function setMail($mail) {
+		$this->mail = $mail;
+		return $this;
+	}
 }
