@@ -2,14 +2,11 @@
 
 namespace App\Controller;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
-use Symfony\Component\Serializer\Serializer; // オブジェクトのシリアライズ(テキストデータに変換する処理)
-use Symfony\Component\Serializer\Encoder\XmlEncoder; // XMLデータの変換
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer; // オブジェクトへの変換
 
 // AbstractController
 // Twigというテンプレートエンジンを利用して画面をレンダリング表示するためにも必要
@@ -18,26 +15,72 @@ class HelloController extends AbstractController
     /**
     * @Route("/hello", name="hello")
     */
-    public function index(Request $request)
+    public function index(Request $request, LoggerInterface $logger)
     {
-			$encoders = array(new XmlEncoder());
-			$normalizers = array(new ObjectNormalizer());
-			$serializer = new Serializer($normalizers, $encoders);
-
-			$data = array(
-				'name' => array(
-					'first' => 'Hanako',
-					'second' => 'Tanaka'
-				),
-				'age' => 29
+			$content = <<< EOM
+				<html>
+					<head>
+						<title>Hello</title>
+					</head>
+					<body>
+						<h1>Hello!</h1>
+						<p>this is Symfony sample page.</p>
+					</body>
+				</html>
+EOM;
+			$response = new Response(
+				$content,
+				Response::HTTP_OK,
+				array('content-type' => 'text/html')
 			);
-
-			$response = new Response();
-			$response->headers->set('Content-Type', 'xml');
-			$result = $serializer->serialize($data, 'xml');
-			$response->setContent($result);
+			$logger->info('aaaaa');
 			return $response;
     }
+
+		/**
+		 * @Route("/notfound", name="notfound")
+		 */
+		public function notfound(Request $request){
+			$content = <<< EOM
+			<html>
+				<head>
+					<title>ERROR</title>
+				</head>
+				<body>
+					<h1>EROR! 404</h1>
+					<p>this is Symfony sample error page.</p>
+				</body>
+			</html>
+EOM;
+			$response = new Response(
+				$content,
+				Response::HTTP_NOT_FOUND,
+				array('content-type' => 'text/html')
+			);
+			return $response;
+		}
+		/**
+		 * @Route("/error", name="error")
+		 */
+		public function error(Request $request){
+			$content = <<< EOM
+			<html>
+				<head>
+					<title>ERROR</title>
+				</head>
+				<body>
+					<h1>EROR! 500</h1>
+					<p>this is Symfony sample error page.</p>
+				</body>
+			</html>
+EOM;
+			$response = new Response(
+				$content,
+				Response::HTTP_INTERNAL_SERVER_ERROR,
+				array('content-type' => 'text/html')
+			);
+			return $response;
+		}
 
 		/**
 		 * @Route("/other/{domain}", name="other")
