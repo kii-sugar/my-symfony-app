@@ -13,26 +13,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class HelloController extends AbstractController
 {
     /**
-    * @Route("/hello/{msg}", name="hello")
+    * @Route("/hello", name="hello")
     */
-    public function index($msg='Hello')
+    public function index(Request $req)
     {
 			return $this->render('hello/index.html.twig',[
-				'controller' => 'HelloControleer',
-				'action' => 'index',
-				'prev_action' => '(none)',
-				'message' => $msg
+				'title' => 'Hello',
+				'message' => 'あなたのお名前は？'
 			]);
     }
 
 		/**
-		 * @Route("/other/{action}/{msg}", name="other")
+		 * @Route("/other", name="other")
 		 */
-		public function other($action, $msg) {
+		public function other(Request $req) {
+			$input = $req->request->get('input');
+			$msg = 'こんにちは、' . $input . 'さん!';
 			return $this ->render('hello/index.html.twig', [
-				'controller' => 'HelloControleer',
-				'action' => 'other',
-				'prev_action' => $action,
+				'title' => 'Hello',
 				'message' => $msg
 			]);
 		}
