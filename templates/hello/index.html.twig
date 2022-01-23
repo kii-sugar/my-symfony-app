@@ -7,10 +7,9 @@
 	</head>
 	<body>
 		<h1>{{title}}</h1>
-		<p>{{message | raw}}</p>
-		{{ form_start(form) }}
-		<p>間にメッセージOK？</p>
-		{{ form_widget(form) }}
-		{{ form_end(form) }}
+		<p>data: {{data}}</p>
+		{{ form_start(form)}}
+		{{form_widget(form)}}
+		{{form_end(form)}}
 	</body>
 </html>

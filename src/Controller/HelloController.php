@@ -11,81 +11,50 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 // AbstractController
 // Twigというテンプレートエンジンを利用して画面をレンダリング表示するためにも必要
-class HelloController extends AbstractController
-{
-    /**
-    * @Route("/hello", name="hello")
-    */
-    public function index(Request $req)
-    {
-			$person = new Person();
-			$person->setName('Naho')
-				->setAge(26)
-				->setMail('naho@gmail.com');
+class HelloController extends AbstractController {
+  /**
+  * @Route("/hello", name="hello")
+  */
+  public function index(Request $req, SessionInterface $session) {
+		$data = new MyData();
 
-			// Personインスタンスを引数指定し初期値セット。
-			// このためにはaddする項目の整合性がとれていないといけない。
-			$form = $this->createFormBuilder($person)
-				->add('name', TextType::class)
-				->add('age', IntegerType::class)
-				->add('mail', EmailType::class)
-				->add('save', SubmitType::class,[
-					'label' => 'Click!!'
-				])
-				->getForm();
+		$form = $this->createFormBuilder($data)
+			->add('data', TextType::class)
+			->add('save', SubmitType::class,[
+				'label' => 'Click!!'
+			])
+			->getForm();
 
-			IF($req->getMethod() == 'POST') {
-				$form->handleRequest($req); // reqをフォームに適合
-				$obj = $form->getData(); // フォームのPersonインスタンスを取り出す
-				$msg = 'Name: ' . $obj->getName() . '<br>'
-				. 'Age: ' . $obj->getAge() . '<br>'
-				. 'Mail: ' . $obj->getMail();
+		if ($req->getMethod() == 'POST') {
+			$form->handleRequest($req); // reqをフォームに適合
+			$data = $form->getData(); // フォームのPersonインスタンスを取り出す
+			if ($data->getData() == '!') {
+				$session->remove('data');
 			} else {
-				$msg = 'お名前をどうぞ';
+				$session->set('data', $data->getData());
 			}
-			return $this->render('hello/index.html.twig', [
-				'title' => 'Hello',
-				'message' => $msg,
-				'form' => $form->createview()
-			]);
-    }
+		} 
+		return $this->render('hello/index.html.twig', [
+			'title' => 'Hello',
+			'data' => $session->get('data'),
+			'form' => $form->createview()
+		]);
+  }
 }
 
 // データクラス
-class Person
-{
-	protected $name;
-	protected $age;
-	protected $mail;
+class MyData {
+	protected $data = '';
 
-	public function getName() {
-		return $this->name;
+	public function getData() {
+		return $this->data;
 	}
 
-	public function setName($name) {
-		$this->name = $name;
-		return $this;
-	}
-
-	public function getAge() {
-		return $this->age;
-	}
-
-	public function setAge($age) {
-		$this->age = $age;
-		return $this;
-	}
-
-	public function getMail() {
-		return $this->mail;
-	}
-
-	public function setMail($mail) {
-		$this->mail = $mail;
-		return $this;
+	public function setData($data) {
+		$this->data = $data;
 	}
 }
