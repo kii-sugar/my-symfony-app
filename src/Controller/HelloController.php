@@ -8,6 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
+
 // AbstractController
 // Twigというテンプレートエンジンを利用して画面をレンダリング表示するためにも必要
 class HelloController extends AbstractController
@@ -17,15 +21,24 @@ class HelloController extends AbstractController
     */
     public function index(Request $req)
     {
+			// メソッドチェーン
+			$form = $this->createFormBuilder()
+			->add('input', TextType::class)
+			->add('save', SubmitType::class, [
+				'label' => 'Click'
+			])
+			->getForm();
+
 			if ($req->getMethod() == 'POST') {
-				$input = $req->request->get('input');
-				$msg = 'こんにちは、' . $input . 'さん!';
+				$form->handleRequest($req);
+				$msg = 'こんにちは、' . $form->get('input')->getData() . 'さん';
 			} else {
 				$msg = 'あなたのお名前は？';
 			}
 			return $this->render('hello/index.html.twig',[
 				'title' => 'Hello',
-				'message' => $msg
+				'message' => $msg,
+				'form' => $form->createView() // 作成したフォームのFormViewがテンプレートに渡される
 			]);
     }
 
