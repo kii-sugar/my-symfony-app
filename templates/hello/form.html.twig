@@ -1,0 +1,8 @@
+{% import 'macro.html.twig' as m %}
+
+<table>
+  {{ m.input('text', 'name', '') }}
+  {{ m.input('number', 'age', '') }}
+  {{ m.input('email', 'email', '') }}
+  {{ m.submit('Send!') }}
+</table>
