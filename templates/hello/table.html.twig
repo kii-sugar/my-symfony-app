@@ -8,16 +8,18 @@
 </style>
 <table>
   <tr>
+    <th>ID</th>
     <th>Name</th>
-    <th>Age</th>
     <th>Mail</th>
+    <th>Age</th>
   </tr>
   {% set flg = true %}
   {% for item in data %}
     <tr class="{{ flg ? 'A' : 'B' }}">
+      <td>{{item.id}}</td>
       <td>{{item.name}}</td>
-      <td>{{item.age}}</td>
       <td>{{item.mail}}</td>
+      <td>{{item.age}}</td>
     </tr>
     {% set flg = not(flg) %}
   {% endfor %}
