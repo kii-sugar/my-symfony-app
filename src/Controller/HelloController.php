@@ -34,7 +34,7 @@ class HelloController extends AbstractController {
 				'hobby' => 'cooking',
 				'mail' => 'otochi@gmail.com'
 			)
-			];
+		];
 		return $this -> render('hello/index.html.twig', [
 			'title' => 'Ultra',
 			'message' => 'テンプレートで計算を行います',
