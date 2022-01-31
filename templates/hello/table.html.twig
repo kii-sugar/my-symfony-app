@@ -12,6 +12,7 @@
     <th>Name</th>
     <th>Mail</th>
     <th>Age</th>
+    <th>messages</th>
   </tr>
   {% set flg = true %}
   {% for item in data %}
@@ -20,6 +21,13 @@
       <td>{{item.name}}</td>
       <td>{{item.mail}}</td>
       <td>{{item.age}}</td>
+      <td>
+        <ul>
+          {% for msg in item.messages %}
+            <li>{{msg.content}}</li>
+          {% endfor %}
+        </ul>
+      </td>
     </tr>
     {% set flg = not(flg) %}
   {% endfor %}
