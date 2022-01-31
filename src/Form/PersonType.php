@@ -14,9 +14,9 @@ class PersonType extends AbstractType {
       FormBuilderInterface $builder, /* FormBuilderインスタンス */ 
       array $options /* 設定などをまとめた配列 */) {
     $builder
-    ->add('name', TextType::class)
-		->add('mail', TextType::class)
-		->add('age', IntegerType::class)
+    ->add('name', TextType::class, array('required' => false))
+		->add('mail', EmailType::class, array('required' => false))
+		->add('age', IntegerType::class, array('required' => false))
 		->add('save', SubmitType::class, array('label' => 'CLICK'));
   }
 

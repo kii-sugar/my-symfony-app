@@ -10,8 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -52,13 +54,23 @@ class HelloController extends AbstractController {
 			->add('save', SubmitType::class, array('label' => 'SEARCH!'))
 			->getForm();
 		$repository = $this->doctrine->getRepository(Person::class); // Personリポジトリを取得する
-		
+		$manager = $this->doctrine->getManager();
+		$mapping = new ResultSetMappingBuilder($manager);
+		$mapping->addRootEntityFromClassMetadata('App\Entity\Person', 'p');
 		if ($req->getMethod() == 'POST') {
 			$form->handleRequest($req); // Formにリクエスト情報をハンドリング
 			$findstr = $form->getData()->getFind(); // 検索テキストを得る
-			$result = $repository->findByName($findstr); // nameの値が等しいレコードだけを取得する（複数行)
+			$arr = explode(',', $findstr);
+			$query = $manager->createNativeQuery(
+				'SELECT * FROM person WHERE age between ?1 and ?2', $mapping
+			)
+				->setParameters(array(1 => $arr[0], 2 => $arr[1]));
+			$result = $query->getResult();
+			// $result = $repository->findByName($findstr); // nameの値が等しいレコードだけを取得する（複数行)
 		} else {
-			$result = $repository->findAllwithSort();
+			$query = $manager->createNativeQuery(
+				'SELECT * FROM person', $mapping);
+			$result = $query->getResult();
 		}
 
 		return $this -> render('hello/find.html.twig', [
@@ -71,17 +83,27 @@ class HelloController extends AbstractController {
 	/**
 	 * @Route("/create", name="create")
 	 */
-	public function create(Request $req) {
+	public function create(Request $req, ValidatorInterface $validator) {
 		$person = new Person();
 		$form = $this->createForm(PersonType::class, $person);
 		$form ->handleRequest($req);
 		
 		if ($req->getMethod() == 'POST') {
 			$person = $form->getData();
-			$manager = $this->doctrine->getManager();
-			$manager -> persist($person);
-			$manager -> flush();
-			return $this->redirect('/hello');
+			$errors = $validator->validate($person);
+
+			if (count($errors) == 0) {
+				$manager = $this->doctrine->getManager();
+				$manager -> persist($person);
+				$manager -> flush();
+				return $this->redirect('/hello');
+			} else {
+				return $this->render('hello/create.html.twig', [
+					'title' => 'Hello',
+					'message' => 'ERROR!',
+					'form' => $form->createView(),
+				]);
+			}
 		} else {
 			return $this->render('hello/create.html.twig', [
 				'title' => 'Hello',

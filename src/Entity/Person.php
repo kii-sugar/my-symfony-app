@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,12 +15,17 @@ class Person
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message:"入力してください。")]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Email(message:"メールアドレスを入力してください。")]
+    #[Assert\NotBlank(message:"入力してください。")]
     private $mail;
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Assert\Type(type: "integer", message:"整数を入力してください。")]
+    #[Assert\NotBlank(message:"入力してください。")]
     private $age;
 
     public function getId(): ?int
