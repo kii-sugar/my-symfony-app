@@ -51,14 +51,14 @@ class HelloController extends AbstractController {
 			->add('find', TextType::class)
 			->add('save', SubmitType::class, array('label' => 'SEARCH!'))
 			->getForm();
+		$repository = $this->doctrine->getRepository(Person::class); // Personリポジトリを取得する
 		
 		if ($req->getMethod() == 'POST') {
 			$form->handleRequest($req); // Formにリクエスト情報をハンドリング
 			$findstr = $form->getData()->getFind(); // 検索テキストを得る
-			$repository = $this->doctrine->getRepository(Person::class); // Personリポジトリを取得する
-			$result = $repository->findByNameOrMail($findstr); // nameの値が等しいレコードだけを取得する（複数行)
+			$result = $repository->findByName($findstr); // nameの値が等しいレコードだけを取得する（複数行)
 		} else {
-			$result = null;
+			$result = $repository->findAllwithSort();
 		}
 
 		return $this -> render('hello/find.html.twig', [

@@ -45,8 +45,7 @@ class PersonRepository extends ServiceEntityRepository
         return $builder
             ->where($builder->expr()->gte('p.age', '?1'))
             ->andWhere($builder->expr()->lte('p.age', '?2'))
-            ->andWhere($builder->expr()->like('p.name', '?3'))
-            ->setParameters(array(1 => $arr[0], 2 => $arr[1], 3 => '%a%'))
+            ->setParameters(array(1 => $arr[0], 2 => $arr[1]))
             ->getQuery()->getResult();
     }
 
@@ -63,6 +62,14 @@ class PersonRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    //年齢の降順に並べる
+    public function findAllwithSort() {
+        $builder = $this->createQueryBuilder('p');
+        return $builder
+            ->orderBy('p.age', 'DEsC')
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */
