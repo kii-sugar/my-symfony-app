@@ -56,7 +56,7 @@ class HelloController extends AbstractController {
 			$form->handleRequest($req); // Formにリクエスト情報をハンドリング
 			$findstr = $form->getData()->getFind(); // 検索テキストを得る
 			$repository = $this->doctrine->getRepository(Person::class); // Personリポジトリを取得する
-			$result = $repository->findByAge($findstr); // nameの値が等しいレコードだけを取得する（複数行)
+			$result = $repository->findByNameOrMail($findstr); // nameの値が等しいレコードだけを取得する（複数行)
 		} else {
 			$result = null;
 		}

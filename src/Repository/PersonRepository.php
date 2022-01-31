@@ -50,6 +50,19 @@ class PersonRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    // 名前とメールアドレスで検索する
+    public function findByNameOrMail($value) {
+        $builder = $this->createQueryBuilder('p');
+        return $builder
+            ->where($builder->expr()->like('p.name', '?1'))
+            ->orWhere($builder->expr()->like('p.mail', '?2'))
+            ->setParameters(array(
+                1 => '%'.$value.'%',
+                2 => '%'.$value.'%'
+                )) // 同じ値を設定する場合でも別々のプレースホルダを用意する
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */
