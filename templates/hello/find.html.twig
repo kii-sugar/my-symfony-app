@@ -7,21 +7,15 @@
   <h2>
     FindEntity
   </h2>
+  {{ form_start(form) }}
+  {{ form_widget(form) }}
+  {{ form_end(form) }}
   <hr>
   {% if data != null %}
-    <table>
-      <tr>
-        <th>iD</th><td>{{data.id}}</td>
-      </tr>
-      <tr>  
-        <th>Name</th><td>{{data.name}}</td>
-      </tr>
-      <tr>
-        <th>Mail</th><td>{{data.mail}}</td>
-      </tr>
-      <tr>
-        <th>Age</th><td>{{data.age}}</td>
-      </tr>
-    </table>
+    <ul>
+      {% for item in data %}
+        <li>{{item.name}}({{item.age}})</li>
+      {% endfor %}
+    </ul>
   {% endif %}
 {% endblock %}

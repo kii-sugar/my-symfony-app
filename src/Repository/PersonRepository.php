@@ -19,6 +19,25 @@ class PersonRepository extends ServiceEntityRepository
         parent::__construct($registry, Person::class);
     }
 
+    // nameフィールドで検索するメソッドを追加
+    public function findByName($value) {
+        $arr = explode (',', $value); //第1引数の文字で第２引数の文字列を配列に分割する関数
+        return $this->createQueryBuilder('p') // Personテーブルをpと指定
+            ->where("p.name in (?1, ?2)")
+            ->setParameters(array(1 => $arr[0], 2 => $arr[1]))
+            ->getQuery() // Queryクラスのインスタンスを取得
+            ->getResult(); // 実行(エンティティのリストを返す)
+    }
+
+    // where文を直接書くことを避けるため、Exprクラスのexprメソッドを使用する
+    public function findByName2($value) {
+        $arr = explode(',', $value);
+        $builder = $this->createQueryBuilder('p'); // buidlerを変数に代入
+        return $builder // builderのwhereメソッドを呼び出す形にする
+            ->where($builder->expr()->in('p.name', $arr))
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */

@@ -42,13 +42,29 @@ class HelloController extends AbstractController {
   }
 
 	/**
-  * @Route("/find/{id}", name="find")
+  * @Route("/find", name="find")
   */
-	public function find(Request $req, Person $person) {
+	public function find(Request $req) {
 		
+		$formobj = new FindForm();
+		$form = $this->createFormBuilder($formobj)
+			->add('find', TextType::class)
+			->add('save', SubmitType::class, array('label' => 'SEARCH!'))
+			->getForm();
+		
+		if ($req->getMethod() == 'POST') {
+			$form->handleRequest($req); // Formにリクエスト情報をハンドリング
+			$findstr = $form->getData()->getFind(); // 検索テキストを得る
+			$repository = $this->doctrine->getRepository(Person::class); // Personリポジトリを取得する
+			$result = $repository->findByName2($findstr); // nameの値が等しいレコードだけを取得する（複数行)
+		} else {
+			$result = null;
+		}
+
 		return $this -> render('hello/find.html.twig', [
 			'title' => 'Find Person',
-			'data' => $person
+			'form' => $form->createView(),
+			'data' => $result
 		]);
   }
 
