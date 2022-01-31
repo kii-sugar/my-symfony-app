@@ -66,10 +66,13 @@ class PersonRepository extends ServiceEntityRepository
     public function findAllwithSort() {
         $builder = $this->createQueryBuilder('p');
         return $builder
-            ->orderBy('p.age', 'DEsC')
+            ->orderBy('p.age', 'DESC')
+            ->setFirstResult(0) // 〇番目から0の場合先頭から
+            ->setMaxResults(3) //最大3件取得
             ->getQuery()
             ->getResult();
     }
+
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */
