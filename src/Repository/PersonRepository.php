@@ -38,6 +38,18 @@ class PersonRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    // 年齢条件文で〇歳以上●歳以下
+    public function findByAge($value) {
+        $arr = explode(',', $value);
+        $builder = $this->createQueryBuilder('p');
+        return $builder
+            ->where($builder->expr()->gte('p.age', '?1'))
+            ->andWhere($builder->expr()->lte('p.age', '?2'))
+            ->andWhere($builder->expr()->like('p.name', '?3'))
+            ->setParameters(array(1 => $arr[0], 2 => $arr[1], 3 => '%a%'))
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */
