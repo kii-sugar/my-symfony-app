@@ -5,7 +5,24 @@
 
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
-<p>{{ message }}</p>
+<style>
+  .flash-notice {
+    color:red;
+    font-size:16px;
+    font-weight:bold;
+  }
+</style>
+<ol>
+  {% for message in bag.peek('info.mail') %}
+  <div class="flash-notice">
+    <li>{{ message.name }} mail:{{ message.mail }} message: {{message}}</li>
+  </div>
+  {% endfor %}
+</ol>
+<p>{{message}}</p>
+{{form_start(form)}}
+{{form_widget(form)}}
+{{form_end(form)}}
 {% include '/hello/table.html.twig' with [data] %}
 <a href="/create">⇒ to create new person</a>
 {% endblock %}
