@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception;
@@ -121,7 +120,7 @@ class HelloController extends AbstractController {
 
 			if (count($errors) == 0) {
 				$manager = $this->doctrine->getManager();
-				$manager -> persist($person);
+				$manager -> persist($person); // 登録
 				$manager -> flush();
 				return $this->redirect('/hello');
 			} else {
