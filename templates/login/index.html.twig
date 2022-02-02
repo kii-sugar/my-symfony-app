@@ -7,7 +7,7 @@
     <p>ログイン</p>
     <p>{{ user }}</p>
     {% if error %}
-        <p>{{ error.messageKery }}</p>
+        <p>{{ error.messageKey }}</p>
     {% endif %}
 
     <form action="{{ path('login') }}" method="post">

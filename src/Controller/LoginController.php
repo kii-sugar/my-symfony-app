@@ -27,4 +27,11 @@ class LoginController extends AbstractController
             'user' => $user
         ]);
     }
+
+    /**
+     * @Route("/logout", name="logout", methods={"GET"})
+     */
+    public function logout(): void
+    {
+    }
 }

@@ -85,7 +85,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // ユ�
     // デフォルトでisActiveをtrueにしておく
     public function __construct()
     {
-        $this->isActive = true;
+        $this->isActivated = true;
     }
 
 
@@ -114,9 +114,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // ユ�
         $roles = [];
         // guarantee every user at least has ROLE_USER
         if($this->username == 'admin') {
-            $roles[] = 'ROLE_USER';
-        } else {
             $roles[] = 'ROLE_ADMIN';
+        } else {
+            $roles[] = 'ROLE_USER';
         }
 
         return array_unique($roles);

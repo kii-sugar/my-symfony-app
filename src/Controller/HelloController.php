@@ -22,6 +22,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
 
 // AbstractController
 // Twigというテンプレートエンジンを利用して画面をレンダリング表示するためにも必要
@@ -33,6 +35,10 @@ class HelloController extends AbstractController {
   */
 	public function index(Request $req, SessionInterface $session)
 	{
+		if(!$this->getUser()->getIsActivated()) {
+			// アクセス権が無いために例外発生アクセス禁止
+			throw new AccessDeniedException('Unable to access!');
+		}
 		$formobj = new HelloForm();
 		// フラッシュメッセージ
 		$form = $this->createForm(HelloType::class, $formobj);
@@ -56,7 +62,8 @@ class HelloController extends AbstractController {
 			'data' => $data,
 			'message' => $msg,
 			'bag' => $session->getFlashBag(),
-			'form' => $form->createView()
+			'form' => $form->createView(),
+			'user' => $this->getUser()
 		]);
   }
 

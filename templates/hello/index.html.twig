@@ -12,13 +12,31 @@
     font-weight:bold;
   }
 </style>
-<ol>
+<table>
+  <tr>
+    <th>ID</th>
+    <td>{{user.id}}</td>
+  </tr>
+  <tr>
+    <th>Name</th>
+    <td>{{user.username}}</td>
+  </tr>
+  <tr>
+    <th>Mail</th>
+    <td>{{user.email}}</td>
+  </tr>
+  <tr>
+    <th>Role</th>
+    <td>{{user.roles[0]}}</td>
+  </tr>
+</table>
+<ul>
   {% for message in bag.peek('info.mail') %}
   <div class="flash-notice">
     <li>{{ message.name }} mail:{{ message.mail }} message: {{message}}</li>
   </div>
   {% endfor %}
-</ol>
+</ul>
 <p>{{message}}</p>
 {{form_start(form)}}
 {{form_widget(form)}}
