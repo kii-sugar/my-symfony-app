@@ -150,4 +150,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // ユ�
         ) = unserialize($serialied, array('allowed_classes' => false));
         // unserializeメソッドを使ってアンシリアライズ
     }
+
+    public function __toString()
+    {
+        return '[' . $this->getUserName() . ', email: ' . $this->getEmail() . ']';
+    }
 }

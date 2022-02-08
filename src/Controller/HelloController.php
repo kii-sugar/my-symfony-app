@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\PersonType;
 use App\Form\HelloType;
 use App\Entity\Person;
+use App\Service\MyService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,9 +32,9 @@ class HelloController extends AbstractController {
 
 	public function __construct(private ManagerRegistry $doctrine) {}
 	/**
-  * @Route("/hello", name="hello")
+  * @Route("/hello/{id}", name="hello")
   */
-	public function index(Request $req, SessionInterface $session)
+	public function index(Request $req, SessionInterface $session, int $id = 1, MyService $service)
 	{
 		if(!$this->getUser()->getIsActivated()) {
 			// アクセス権が無いために例外発生アクセス禁止
@@ -53,7 +54,9 @@ class HelloController extends AbstractController {
 		} else {
 			$msg = 'send form';
 		}
-		
+		$person = $service->getPerson($id);
+		$msg = $person == null ? 'no person.' : 'name: '. $person;
+
 		$repository = $this->doctrine->getRepository(Person::class);
 		$data = $repository->findall();
 
