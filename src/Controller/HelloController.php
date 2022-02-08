@@ -31,6 +31,17 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class HelloController extends AbstractController {
 
 	public function __construct(private ManagerRegistry $doctrine) {}
+
+	/**
+	 * @Route("/", name="main")
+	 */
+	public function main(Request $req, int $id=1)
+	{
+		return $this -> render('hello/main.html.twig', [
+			'title' => 'hello',
+			'number' => 123450000
+		]);
+	}
 	/**
   * @Route("/hello/{id}", name="hello")
   */

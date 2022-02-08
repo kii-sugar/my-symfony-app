@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block page %}{{ title }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<h2>Twigのカスタムタグ</h2>
+<p>{{number|price}}</p>
+<!-- priceFilterメソッドの第2,3引数に渡される-->
+<p>{{number|price('$', 2)}}</p>
+{% endblock %}
