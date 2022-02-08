@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MessageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\Constraints as MyAssert;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message
@@ -18,7 +19,10 @@ class Message
     #[ORM\ManyToOne(targetEntity: Person::class, inversedBy: 'messages')]
     private $person;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @MyAssert\NeverUpper(mode="strict")
+     */
     private $content;
 
     #[ORM\Column(type: 'datetime')]
