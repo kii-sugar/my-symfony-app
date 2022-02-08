@@ -7,9 +7,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\Constraints as MyAssert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity('username')] // エンティティがユニーク（重複することが無い）ことを表すアノテーション
+/**
+ * @MyAssert\UserChecker
+ */
 class User implements UserInterface, PasswordAuthenticatedUserInterface // ユーザー認証のために必要
 {
     #[ORM\Id]
